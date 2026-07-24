@@ -1,3 +1,5 @@
-import React from 'react';
+import React from "react";
 
-export default ({ value, handleChange }) => <textarea value={value} onChange={handleChange} />;
+export default ({ value, handleChange }) => (
+  <textarea value={value} onChange={handleChange} />
+);

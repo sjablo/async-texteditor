@@ -1,35 +1,39 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import cp from 'coinpaprika-js';
+import React, { Component } from "react";
+import { render } from "react-dom";
+import cp from "coinpaprika-js";
 
-import TextArea from './TextArea';
+import TextArea from "./TextArea";
 
-import './style.css';
-
+import "./style.css";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      input: '',
-      output: '',
-      error: ''
+      input: "",
+      output: "",
+      error: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   async getCoinData(methodName, symbol) {
-    switch(methodName){
-      case 'Name': return await this.name(symbol);
-      case 'Price': return await this.price(symbol);
+    switch (methodName) {
+      case "Name":
+        return await this.name(symbol);
+      case "Price":
+        return await this.price(symbol);
     }
   }
 
   async getCoinBySymbol(symbol) {
-    const { currencies } = await cp.search(symbol, { c: 'currencies', modifier: 'symbol_search' });
+    const { currencies } = await cp.search(symbol, {
+      c: "currencies",
+      modifier: "symbol_search",
+    });
 
-    return currencies.find(currency => currency.symbol === symbol);
+    return currencies.find((currency) => currency.symbol === symbol);
   }
 
   async name(symbol) {
@@ -40,7 +44,7 @@ class App extends Component {
 
   async price(symbol) {
     const { id } = await this.getCoinBySymbol(symbol);
-    const { price } = await cp.convert(1, id, 'usd-us-dollars');
+    const { price } = await cp.convert(1, id, "usd-us-dollars");
 
     return `$${price}`;
   }
@@ -55,14 +59,16 @@ class App extends Component {
     const fetchedData = {};
     let temp, element;
     const detectedMarkupsLength = detectedMarkups ? detectedMarkups.length : 0;
-    for(let i = 0; i < detectedMarkupsLength; i++) {
+    for (let i = 0; i < detectedMarkupsLength; i++) {
       element = detectedMarkups[i];
       //TODO fix error handling
       try {
-        temp = await this.getCoinData(...element.match(methodNameRegex)[0].split('/'));
-      } catch(error) {
+        temp = await this.getCoinData(
+          ...element.match(methodNameRegex)[0].split("/"),
+        );
+      } catch (error) {
         return {
-          error
+          error,
         };
       }
       fetchedData[element] = temp;
@@ -72,8 +78,8 @@ class App extends Component {
     const replacer = (match) => fetchedData[match];
 
     return {
-      output: text.replace(regex, replacer)
-      };
+      output: text.replace(regex, replacer),
+    };
   }
 
   // getCoinBySymbol(symbol) {
@@ -110,8 +116,8 @@ class App extends Component {
     this.setState({
       input: value,
       output,
-      error
-    })
+      error,
+    });
   }
 
   render() {
@@ -129,4 +135,4 @@ class App extends Component {
   }
 }
 
-render(<App />, document.getElementById('root'));
+render(<App />, document.getElementById("root"));
