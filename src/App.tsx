@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
 import cp from "coinpaprika-js";
 
-import TextArea from "./TextArea";
+import TextArea from "./components/TextArea";
 
-import "./style.css";
+import "./App.css";
 
 class App extends Component {
   constructor() {
@@ -135,4 +134,4 @@ class App extends Component {
   }
 }
 
-render(<App />, document.getElementById("root"));
+export default App;
