@@ -1,32 +1,29 @@
-import React, { Component } from "react";
+import { useState } from "react";
 import cp from "coinpaprika-js";
 
 import TextArea from "./components/TextArea";
 
 import "./App.css";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      input: "",
-      output: "",
-      error: "",
-    };
+function App() {
+  const [state, setState] = useState({
+    input: "",
+    output: "",
+    error: "",
+  });
 
-    this.handleChange = this.handleChange.bind(this);
-  }
+  const { input, output, error } = state;
 
-  async getCoinData(methodName, symbol) {
+  async function getCoinData(methodName, symbol) {
     switch (methodName) {
       case "Name":
-        return await this.name(symbol);
+        return await name(symbol);
       case "Price":
-        return await this.price(symbol);
+        return await price(symbol);
     }
   }
 
-  async getCoinBySymbol(symbol) {
+  async function getCoinBySymbol(symbol) {
     const { currencies } = await cp.search(symbol, {
       c: "currencies",
       modifier: "symbol_search",
@@ -35,20 +32,20 @@ class App extends Component {
     return currencies.find((currency) => currency.symbol === symbol);
   }
 
-  async name(symbol) {
-    const { name } = await this.getCoinBySymbol(symbol);
+  async function name(symbol) {
+    const { name } = await getCoinBySymbol(symbol);
 
     return name;
   }
 
-  async price(symbol) {
-    const { id } = await this.getCoinBySymbol(symbol);
+  async function price(symbol) {
+    const { id } = await getCoinBySymbol(symbol);
     const { price } = await cp.convert(1, id, "usd-us-dollars");
 
     return `$${price}`;
   }
 
-  async parseText(text) {
+  async function parseText(text) {
     const regex = /{{ (Name|Price)\/\S+ }}/g;
     const methodNameRegex = /(Name|Price)\/\S+/g;
     // const methodNameRegex = /(?<={{ )(Name|Price)\/\S{3}(?= }})/g;
@@ -62,7 +59,7 @@ class App extends Component {
       element = detectedMarkups[i];
       //TODO fix error handling
       try {
-        temp = await this.getCoinData(
+        temp = await getCoinData(
           ...element.match(methodNameRegex)[0].split("/"),
         );
       } catch (error) {
@@ -81,30 +78,26 @@ class App extends Component {
     };
   }
 
-  async handleChange({ target: { value } }) {
+  async function handleChange({ target: { value } }) {
     //TODO add debounce
-    const { output, error } = await this.parseText(value);
+    const { output, error } = await parseText(value);
 
-    this.setState({
+    setState({
       input: value,
       output,
       error,
     });
   }
 
-  render() {
-    const { input, output, error } = this.state;
-
-    return (
-      <div>
-        <div className="flexbox">
-          <TextArea value={input} handleChange={this.handleChange} />
-          <article>{output}</article>
-        </div>
-        <div>{error}</div>
+  return (
+    <div>
+      <div className="flexbox">
+        <TextArea value={input} handleChange={handleChange} />
+        <article>{output}</article>
       </div>
-    );
-  }
+      <div>{error}</div>
+    </div>
+  );
 }
 
 export default App;
