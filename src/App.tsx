@@ -118,7 +118,10 @@ function App() {
     target: { value },
   }: React.ChangeEvent<HTMLTextAreaElement>) {
     //TODO add debounce
-    const { output, error } = await parseText(value);
+    const result = await parseText(value);
+
+    const output = result.output ?? "";
+    const error = (result as { error?: Error }).error?.message ?? "";
 
     setState({
       input: value,
