@@ -1,5 +1,5 @@
-import { useState } from "react";
-import cp from "coinpaprika-js";
+import { useState, useMemo } from "react";
+import CoinpaprikaAPI from "@coinpaprika/api-nodejs-client";
 
 import TextArea from "./components/TextArea";
 
@@ -14,6 +14,8 @@ function App() {
 
   const { input, output, error } = state;
 
+  const cp = useMemo(() => new CoinpaprikaAPI(), []);
+
   async function getCoinData(methodName, symbol) {
     switch (methodName) {
       case "Name":
@@ -24,7 +26,8 @@ function App() {
   }
 
   async function getCoinBySymbol(symbol) {
-    const { currencies } = await cp.search(symbol, {
+    const { currencies } = await cp.search({
+      q: symbol,
       c: "currencies",
       modifier: "symbol_search",
     });
@@ -40,7 +43,11 @@ function App() {
 
   async function price(symbol) {
     const { id } = await getCoinBySymbol(symbol);
-    const { price } = await cp.convert(1, id, "usd-us-dollars");
+    const { price } = await cp.priceConverter({
+      base_currency_id: id,
+      quote_currency_id: "usd-us-dollars",
+      amount: 1,
+    });
 
     return `$${price}`;
   }
