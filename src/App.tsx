@@ -81,33 +81,6 @@ class App extends Component {
     };
   }
 
-  // getCoinBySymbol(symbol) {
-  //   return cp.search('BTC', { c: 'currencies', modifier: 'symbol_search' })
-  //   .then(({ currencies }) => currencies.find(currency => currency.symbol === symbol));
-  // }
-
-  // name(symbol) {
-  //   return this.getCoinBySymbol(symbol)
-  //   .then(({ name }) => name);
-  // }
-
-  // price(symbol) {
-  //   return this.getCoinBySymbol(symbol)
-  //   .then(({ id }) => cp.convert(1, id, 'usd-us-dollars'))
-  //   .then(({ price }) => `$${price}`)
-  // }
-
-  // parseText(text) {
-  //   const regex = /(?<={{ )(Name|Price)\/\S{3}(?= }})/g;
-  //   const replacer = (match) => {
-  //     const [ methodName, symbol ] = match.split('/');
-
-  //     return this.getCoinData(methodName, symbol);
-  //   };
-
-  //   return text.replace(regex, replacer);
-  // }
-
   async handleChange({ target: { value } }) {
     //TODO add debounce
     const { output, error } = await this.parseText(value);
