@@ -54,15 +54,24 @@ function App() {
   }
 
   async function name(symbol: string) {
-    const { name } = await getCoinBySymbol(symbol);
+    const coin = await getCoinBySymbol(symbol);
 
-    return name;
+    if (!coin) {
+      throw new Error(`Currency with symbol ${symbol} not found`);
+    }
+
+    return coin.name;
   }
 
   async function price(symbol: string) {
-    const { id } = await getCoinBySymbol(symbol);
+    const coin = await getCoinBySymbol(symbol);
+
+    if (!coin) {
+      throw new Error(`Currency with symbol ${symbol} not found`);
+    }
+
     const { price } = await cp.priceConverter({
-      base_currency_id: id,
+      base_currency_id: coin.id,
       quote_currency_id: "usd-us-dollars",
       amount: 1,
     });
